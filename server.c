@@ -16,11 +16,11 @@ int main(int argc, char *argv[])
         perror("failed to create socket");
         exit(1);
     }
-    struct sockaddr_in sock_addr;
+    struct sockaddr_in sock_addr = {0};
     sock_addr.sin_family = AF_INET;
     sock_addr.sin_port = htons(8080);
     sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    if (bind(sock, &sock, sizeof(struct sockaddr_in)) == -1)
+    if (bind(sock, &sock_addr, sizeof(struct sockaddr_in)) == -1)
     {
         perror("failed to bind socket");
         exit(1);
