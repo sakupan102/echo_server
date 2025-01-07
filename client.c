@@ -25,29 +25,25 @@ int main(int argc, char *argv[])
     sock_addr.sin_family = AF_INET;
     sock_addr.sin_port = htons(8080);
     sock_addr.sin_addr.s_addr = ((struct sockaddr_in *)info->ai_addr)->sin_addr.s_addr;
-    int connected = connect(sock, &sock_addr, sizeof(struct sockaddr_in));
-    if (connected == -1)
+    if (connect(sock, &sock_addr, sizeof(struct sockaddr_in)))
     {
         perror("failed to connect server");
         exit(1);
     }
     char *message = argv[1];
-    int wrote = write(sock, message, strlen(message));
-    if (wrote == -1)
+    if (write(sock, message, strlen(message)) == -1)
     {
         perror("failed send message");
         exit(1);
     }
     char response_buf[strlen(message)];
-    int success = read(sock, response_buf, strlen(message));
-    if (success == -1)
+    if (read(sock, response_buf, strlen(message)) == -1)
     {
         perror("failed send message");
         exit(1);
     }
     printf("response from server: %s", response_buf);
-    success = close(sock);
-    if (success == -1)
+    if (close(sock) == -1)
     {
         perror("failed to close socket");
         exit(1);

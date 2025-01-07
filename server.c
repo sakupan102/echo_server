@@ -20,21 +20,19 @@ int main(int argc, char *argv[])
     sock_addr.sin_family = AF_INET;
     sock_addr.sin_port = htons(8080);
     sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    int bind_num = bind(sock, &sock, sizeof(struct sockaddr_in));
-    if (bind_num == -1)
+    if (bind(sock, &sock, sizeof(struct sockaddr_in)) == -1)
     {
         perror("failed to bind socket");
         exit(1);
     }
-    int listen_num = listen(sock, MAX_CLIENT);
-    if (listen_num == -1)
+    if (listen(sock, MAX_CLIENT) == -1)
     {
         perror("failed to listen socket");
         exit(1);
     }
+    printf("echo server listen on port: 8080");
     while (1)
     {
-        printf("hello!\n");
         struct sockaddr_in client_addr;
         socklen_t addrlen = sizeof(struct sockaddr_in);
         int queued_socket = accept(sock, &client_addr, &addrlen);
