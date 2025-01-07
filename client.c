@@ -10,8 +10,8 @@
 
 int main(int argc, char *argv[])
 {
-    int socket_num = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (socket_num == -1)
+    int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock == -1)
     {
         perror("failed to create socket");
         exit(1);
@@ -21,33 +21,32 @@ int main(int argc, char *argv[])
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     getaddrinfo(hostname, NULL, &hints, &info);
-    struct sockaddr_in sock;
-    memset(&sock, 0, sizeof(struct sockaddr_in));
-    sock.sin_family = AF_INET;
-    sock.sin_port = htons(8080);
-    sock.sin_addr.s_addr = ((struct sockaddr_in *)info->ai_addr)->sin_addr.s_addr;
-    int connected = connect(socket_num, &sock, sizeof(struct sockaddr_in));
+    struct sockaddr_in sock_addr;
+    sock_addr.sin_family = AF_INET;
+    sock_addr.sin_port = htons(8080);
+    sock_addr.sin_addr.s_addr = ((struct sockaddr_in *)info->ai_addr)->sin_addr.s_addr;
+    int connected = connect(sock, &sock_addr, sizeof(struct sockaddr_in));
     if (connected == -1)
     {
         perror("failed to connect server");
         exit(1);
     }
     char *message = argv[1];
-    int wrote = write(socket_num, message, strlen(message));
+    int wrote = write(sock, message, strlen(message));
     if (wrote == -1)
     {
         perror("failed send message");
         exit(1);
     }
     char response_buf[strlen(message)];
-    int success = read(socket_num, response_buf, strlen(message));
+    int success = read(sock, response_buf, strlen(message));
     if (success == -1)
     {
         perror("failed send message");
         exit(1);
     }
     printf("response from server: %s", response_buf);
-    success = close(socket_num);
+    success = close(sock);
     if (success == -1)
     {
         perror("failed to close socket");

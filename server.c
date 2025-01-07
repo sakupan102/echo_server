@@ -10,24 +10,23 @@
 
 int main(int argc, char *argv[])
 {
-    int socket_num = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (socket_num == -1)
+    int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock == -1)
     {
         perror("failed to create socket");
         exit(1);
     }
-    struct sockaddr_in sock;
-    memset(&sock, 0, sizeof(struct sockaddr));
-    sock.sin_family = AF_INET;
-    sock.sin_port = htons(8080);
-    sock.sin_addr.s_addr = inet_addr("127.0.0.1");
-    int bind_num = bind(socket_num, &sock, sizeof(struct sockaddr_in));
+    struct sockaddr_in sock_addr;
+    sock_addr.sin_family = AF_INET;
+    sock_addr.sin_port = htons(8080);
+    sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    int bind_num = bind(sock, &sock, sizeof(struct sockaddr_in));
     if (bind_num == -1)
     {
         perror("failed to bind socket");
         exit(1);
     }
-    int listen_num = listen(socket_num, MAX_CLIENT);
+    int listen_num = listen(sock, MAX_CLIENT);
     if (listen_num == -1)
     {
         perror("failed to listen socket");
@@ -38,7 +37,7 @@ int main(int argc, char *argv[])
         printf("hello!\n");
         struct sockaddr_in client_addr;
         socklen_t addrlen = sizeof(struct sockaddr_in);
-        int queued_socket = accept(socket_num, &client_addr, &addrlen);
+        int queued_socket = accept(sock, &client_addr, &addrlen);
 
         if (queued_socket == -1)
         {
