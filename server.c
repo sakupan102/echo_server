@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
         perror("failed to listen socket");
         exit(1);
     }
-    printf("echo server listen on port: 8080");
+    printf("echo server listen on port: 8080\n");
     while (1)
     {
         struct sockaddr_in client_addr;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         ssize_t message_size = read(queued_socket, echo_buffer, BUF_SIZE);
         printf("client address: %s\n", inet_ntoa(client_addr.sin_addr));
         printf("reqest message from client: %s\n", echo_buffer);
-        printf("message size: %d\n", message_size);
+        printf("message size: %d\n\n", message_size);
         if (message_size == -1)
         {
             perror("failed to read buffer");

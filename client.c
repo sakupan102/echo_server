@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
         perror("failed send message");
         exit(1);
     }
-    printf("response from server: %s", response_buf);
+    printf("response from server: %s\n", response_buf);
     if (close(sock) == -1)
     {
         perror("failed to close socket");
