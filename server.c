@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <errno.h>
 
@@ -46,6 +47,7 @@ int main(int argc, char *argv[])
         }
         char echo_buffer[BUF_SIZE];
         ssize_t message_size = read(queued_socket, echo_buffer, BUF_SIZE);
+        printf("client address: %s\n", inet_ntoa(client_addr.sin_addr));
         printf("reqest message from client: %s\n", echo_buffer);
         printf("message size: %d\n", message_size);
         if (message_size == -1)

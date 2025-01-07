@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
 #include <stdio.h>
 #include <errno.h>
 
@@ -15,12 +16,16 @@ int main(int argc, char *argv[])
         perror("failed to create socket");
         exit(1);
     }
-
+    char *hostname = argv[2];
+    struct addrinfo hints, *info;
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    getaddrinfo(hostname, NULL, &hints, &info);
     struct sockaddr_in sock;
     memset(&sock, 0, sizeof(struct sockaddr_in));
     sock.sin_family = AF_INET;
     sock.sin_port = htons(8080);
-    sock.sin_addr.s_addr = inet_addr("127.0.0.1");
+    sock.sin_addr.s_addr = ((struct sockaddr_in *)info->ai_addr)->sin_addr.s_addr;
     int connected = connect(socket_num, &sock, sizeof(struct sockaddr_in));
     if (connected == -1)
     {
