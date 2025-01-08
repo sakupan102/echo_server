@@ -13,12 +13,12 @@ C言語によるechoサーバーの実装。クライアントで送信したメ
 # Usage
 ## echoサーバーの起動
 ```
-gcc -o server.o server.c
-./server.o
+gcc -o server server.c
+./server
 ```
 ## client側のリクエスト送信方法
 clientサーバーの起動
 ```
-gcc -o client.o client.c
-./client.o ${message} ${domain}
+gcc -o client client.c
+./client ${message} ${domain}
 ```
