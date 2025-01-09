@@ -33,15 +33,17 @@ int main(int argc, char *argv[])
     char *message = argv[1];
     if (write(sock, message, strlen(message)) == -1)
     {
-        perror("failed send message");
+        perror("failed to send message");
         exit(1);
     }
-    char response_buf[strlen(message)];
-    if (read(sock, response_buf, strlen(message)) == -1)
+    char response_buf[BUF_SIZE];
+    ssize_t message_size = read(sock, response_buf, BUF_SIZE);
+    if (message_size == -1)
     {
-        perror("failed send message");
+        perror("failed to send message");
         exit(1);
     }
+    response_buf[message_size] = '\0';
     printf("response from server: %s\n", response_buf);
     if (close(sock) == -1)
     {
