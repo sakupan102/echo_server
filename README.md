@@ -13,12 +13,9 @@ C言語によるechoサーバーの実装。クライアントで送信したメ
 # Usage
 ## echoサーバーの起動
 ```
-gcc -o server server.c
-./server
+make run-server
 ```
 ## client側のリクエスト送信方法
-clientサーバーの起動
 ```
-gcc -o client client.c
-./client ${message} ${domain}
+make run-client MSG=送りたいメッセージ DOMAIN=ドメイン名
 ```
