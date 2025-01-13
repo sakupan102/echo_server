@@ -1,5 +1,8 @@
 MSG = hello
 DOMAIN = localhost
+CFLAGS += -I/usr/include/kqueue
+LDFLAGS += -lkqueue
+
 
 .PHONY: run-server server.c
 run-server: build-server
@@ -7,11 +10,11 @@ run-server: build-server
 
 .PHONY: build-server
 build-server: server.c
-	gcc -Wall -o server server.c
+	gcc ${CFLAGS} -Wall -o server server.c ${LDFLAGS}
 
 .PHONY: run-client client.c
 run-client: build-client
-	./client ${MSG} ${DOMAIN}
+	./client ${DOMAIN}
 
 .PHONY: build-client
 build-client: client.c
