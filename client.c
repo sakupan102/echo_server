@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         perror("failed to create socket");
         exit(1);
     }
-    char *hostname = argv[2];
+    char *hostname = argv[1];
     struct addrinfo hints, *info;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
@@ -30,25 +30,26 @@ int main(int argc, char *argv[])
         perror("failed to connect server");
         exit(1);
     }
-    char *message = argv[1];
-    if (write(sock, message, strlen(message)) == -1)
+    while (1)
     {
-        perror("failed to send message");
-        exit(1);
+        char message_buf[BUF_SIZE];
+        printf("input message: ");
+        fgets(message_buf, BUF_SIZE, stdin);
+        if (write(sock, message_buf, strlen(message_buf)) == -1)
+        {
+            perror("failed to send message");
+            exit(1);
+        }
+        char response_buf[BUF_SIZE];
+        ssize_t message_size = read(sock, response_buf, BUF_SIZE);
+        if (message_size == -1)
+        {
+            perror("failed to send message");
+            exit(1);
+        }
+        response_buf[message_size] = '\0';
+        printf("response from server: %s\n", response_buf);
     }
-    char response_buf[BUF_SIZE];
-    ssize_t message_size = read(sock, response_buf, BUF_SIZE);
-    if (message_size == -1)
-    {
-        perror("failed to send message");
-        exit(1);
-    }
-    response_buf[message_size] = '\0';
-    printf("response from server: %s\n", response_buf);
-    if (close(sock) == -1)
-    {
-        perror("failed to close socket");
-        exit(1);
-    }
+    cose(sock);
     return 0;
 }
