@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#define MAX_CLIENT 10
+#define MAX_CLIENT 10000
 #define BUF_SIZE 32
 
 int main(int argc, char *argv[])
@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
         perror("failed to register kevent");
         exit(1);
     }
+    int num_clients = 0;
 
     while (1)
     {
@@ -70,19 +71,32 @@ int main(int argc, char *argv[])
         else if ((tevent.flags & 0xf000) == EV_EOF) // ソケットが切断された場合はclose
         {
             int fd = tevent.ident;
-            printf("connection closed\n");
+            EV_SET(&event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+            int ret = kevent(kq, &event, 1, NULL, 0, NULL);
+            if (ret == -1)
+            {
+                perror("failed to register kevent");
+                exit(1);
+            }
             close(fd);
+
+            printf("connection closed\n");
+            --num_clients;
         }
         else
         {
             if (tevent.ident == sock)
             {
                 // 受け入れ可能であれば新しい接続の受け入れを行う
-
+                if (num_clients == MAX_CLIENT)
+                {
+                    continue;
+                }
                 struct kevent event = {0};
                 struct sockaddr_in client_addr = {0};
                 socklen_t addrlen = sizeof(struct sockaddr_in);
                 int fd = accept(sock, &client_addr, &addrlen);
+                ++num_clients;
                 if (fd == -1)
                 {
                     if (errno == EAGAIN | errno == EWOULDBLOCK)
