@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[])
 {
-    // ToDo ctrl + cで割り込みが生じたときの処理
+    // TODO: handle interruption when Ctrl+C is pressed
 
     int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1)
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
     while (1)
     {
-        /* 読み取り可能なソケットがあるか調べる*/
+        /* Check whether any socket is ready for reading. */
         struct kevent tevent = {0};
         int num_events = kevent(kq, NULL, 0, &tevent, 1, NULL);
         if (num_events == -1)
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         if (num_events == 0)
         {
         }
-        else if ((tevent.flags & 0xf000) == EV_EOF) // ソケットが切断された場合はclose
+        else if ((tevent.flags & 0xf000) == EV_EOF) // Close the socket if the connection has been terminated.
         {
             int fd = tevent.ident;
             EV_SET(&event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
         {
             if (tevent.ident == sock)
             {
-                // 受け入れ可能であれば新しい接続の受け入れを行う
+                // Accept a new connection if one is available.
                 if (num_clients == MAX_CLIENT)
                 {
                     continue;
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                // メッセージ読み取りの開始
+                // Start reading the incoming message.
 
                 int fd = tevent.ident;
                 char echo_buffer[BUF_SIZE];

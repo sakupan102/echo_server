@@ -1,21 +1,21 @@
 # TL;DR
-C言語によるechoサーバーの実装。クライアントで送信したメッセージがそのままレスポンスとして返ってくる。
-# 実装状況
+An echo server implementation in C. Messages sent by the client are returned as-is in the response.
+# Implementation Status
 - Done
-    - エラーハンドリング
-    - メッセージの送受信
-    - DNS解決
+    - Error handling
+    - Sending and receiving messages
+    - DNS resolution
 - ToDo
-    - IPv6対応
-    - 大量のリクエスト処理
+    - IPv6 support
+    - Handling a large volume of requests
     - Graceful Shutdown
 
 # Usage
-## echoサーバーの起動
+## Starting the echo server
 ```
 make run-server
 ```
-## client側のリクエスト送信方法
+## Sending a request from the client
 ```
-make run-client MSG=送りたいメッセージ DOMAIN=ドメイン名
+make run-client MSG="message to send" DOMAIN=domain_name
 ```
